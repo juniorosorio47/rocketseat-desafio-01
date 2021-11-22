@@ -18,7 +18,7 @@ app.get("/repositories", (request, response) => {
 
   if(search) {
 
-    return response.json({search})
+    return response.json(search)
   }else{
 
     return response.status(400).json({message: 'Title not found.'})
@@ -35,15 +35,11 @@ app.post("/repositories", (request, response) => {
     url, 
     techs, 
     likes: 0
-  }
+  };
 
-  if(repositories.find((repo)=>repo.title === title)){
-    return response.status(400).json({message: 'Repository with this title already exists'})
-  }
+  repositories.push(repository);
 
-  repositories.push(repository)
-
-  return response.status(200).json({message: 'Repository created successfully', data: repository})
+  return response.status(200).json(repository);
 });
 
 app.put("/repositories/:id", (request, response) => {
@@ -62,7 +58,7 @@ app.put("/repositories/:id", (request, response) => {
 
     repositories[repositoryIndex] = repository
 
-    return response.status(200).json({repository})
+    return response.status(200).json(repository)
   }
 
   return response.status(404).json({message: 'Repository not found', data:{ title, url, techs }})
@@ -81,7 +77,7 @@ app.delete("/repositories/:id", (request, response) => {
   if(repositoryIndex>=0) {
     repositories.splice(repositoryIndex, 1);
 
-    return response.send();
+    return response.status(204).send();
   }
 
   return response.status(404).json({message: 'Repository not found.'});
@@ -101,7 +97,7 @@ app.post("/repositories/:id/like", (request, response) => {
   if(repositoryIndex>=0){
     repositories[repositoryIndex].likes++;
 
-    return response.status(200).json({message: "Like added successfully!"});
+    return response.status(200).json({likes: repositories[repositoryIndex].likes});
   }
 
   return response.status(404).json({message: 'Repository not found.'});
